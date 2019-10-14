@@ -10,3 +10,8 @@
      var_dump($i);
      echo '</pre>';
  }
+
+ function url($url)
+ {
+     header('Location:' . $url);
+ }
