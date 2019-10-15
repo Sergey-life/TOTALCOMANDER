@@ -28,9 +28,8 @@ foreach ($files as $file) {
 if($_POST['last-name'] && $_POST['new-name']){
     $lastName=$_POST['last-name'];
     $newName =$_POST['new-name'];
-    rename($dir . DIRECTORY_SEPARATOR . $lastName, $newName);
+    rename($dir . DIRECTORY_SEPARATOR . $lastName, $dir . DIRECTORY_SEPARATOR . $newName);
 }
-p( $dir . DIRECTORY_SEPARATOR . $lastName);
 ?>
 
 <!doctype html>
