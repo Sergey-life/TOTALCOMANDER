@@ -1,14 +1,13 @@
 <?php
+$folders = [];
 session_start();
-const ROOT = __DIR__ . '/files';
+const ROOT = __DIR__ . '\files';
 require_once 'helper.php';
-
-if (!empty($_POST['goto-folder'])){
+if (!empty($_POST['goto-folder'])) {
     $_SESSION['go-to'] = ROOT . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
     opendir($_SESSION['go-to']);
-p($_SESSION['go-to']);
+    p($_SESSION['go-to']);
 }
-$folders = [];
 if (!empty($_POST['create'])) {
     $dir = ROOT;
     createFolder($dir, $_POST['create']);
@@ -23,16 +22,9 @@ if (!empty($_POST['delete-folder'])) {
     } catch (Error $e) {
     }
 }
-$files = scandir($dir);
-foreach ($files as $file) {
-    if ($file != '.' && $file != '..' & $file != '.DS_Store') {
-        $currentDir[] = $file;
-        array_push($folders, $file);
-    }
-}
-if($_POST['last-name'] && $_POST['new-name']){
-    $lastName=$_POST['last-name'];
-    $newName =$_POST['new-name'];
+if ($_POST['last-name'] && $_POST['new-name']) {
+    $lastName = $_POST['last-name'];
+    $newName = $_POST['new-name'];
     rename($dir . DIRECTORY_SEPARATOR . $lastName, $dir . DIRECTORY_SEPARATOR . $newName);
 }
 ?>
@@ -58,12 +50,15 @@ if($_POST['last-name'] && $_POST['new-name']){
     <input type="submit" value="HOME" name="home">
 </form>
 
+
 <?php
-p($folders);
+$currentDir = !empty($_SESSION['go-to']) ?$_SESSION['go-to'] : $dir;
+$folders= getFolders($currentDir);
 if (!empty($folders)) {
     foreach ($folders as $folderName) {
         ?>
-        <p><form method="post" action="index.php">
+        <p>
+        <form method="post" action="index.php">
             <?= $folderName ?>
             <input type='text' name='delete-folder' value='<?= $folderName ?>' hidden>
             <input value='delete <?= $folderName ?>' type='submit'>
