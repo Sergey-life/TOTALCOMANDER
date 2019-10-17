@@ -1,9 +1,13 @@
 <?php
 session_start();
 const ROOT = __DIR__ . '/files';
-const INDEX = '/files';
 require_once 'helper.php';
 
+if (!empty($_POST['goto-folder'])){
+    $_SESSION['go-to'] = ROOT . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
+    opendir($_SESSION['go-to']);
+p($_SESSION['go-to']);
+}
 $folders = [];
 if (!empty($_POST['create'])) {
     $dir = ROOT;
@@ -11,18 +15,14 @@ if (!empty($_POST['create'])) {
 } else {
     $dir = ROOT;
 }
-
 if (!empty($_POST['delete-folder'])) {
     var_dump($_POST);
     $folderName = $_POST['delete-folder'];
-//    var_dump($dir);
     try {
         rmdir($dir . DIRECTORY_SEPARATOR . $folderName);
     } catch (Error $e) {
-
     }
 }
-
 $files = scandir($dir);
 foreach ($files as $file) {
     if ($file != '.' && $file != '..' & $file != '.DS_Store') {
@@ -30,10 +30,11 @@ foreach ($files as $file) {
         array_push($folders, $file);
     }
 }
-
-
-
-p($dir . DIRECTORY_SEPARATOR . $folderName);
+if($_POST['last-name'] && $_POST['new-name']){
+    $lastName=$_POST['last-name'];
+    $newName =$_POST['new-name'];
+    rename($dir . DIRECTORY_SEPARATOR . $lastName, $dir . DIRECTORY_SEPARATOR . $newName);
+}
 ?>
 
 <!doctype html>
@@ -45,7 +46,7 @@ p($dir . DIRECTORY_SEPARATOR . $folderName);
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-<body>
+<p>
 <form action="" method="post">
     <input type="text" name="create">
     <input type="submit" value="create to folder">
@@ -53,15 +54,31 @@ p($dir . DIRECTORY_SEPARATOR . $folderName);
 
 <h1>Files:</h1>
 
+<form method="post" action="#">
+    <input type="submit" value="HOME" name="home">
+</form>
+
 <?php
-var_dump($folders);
+p($folders);
 if (!empty($folders)) {
     foreach ($folders as $folderName) {
         ?>
-        <form method="post" action="#">
+        <p><form method="post" action="index.php">
             <?= $folderName ?>
             <input type='text' name='delete-folder' value='<?= $folderName ?>' hidden>
             <input value='delete <?= $folderName ?>' type='submit'>
+        </form>
+        </p>
+
+        <form method='post' action='index.php'>
+            <input class='hidden' type='text' name='goto-folder' value='<?= $folderName ?>' hidden>
+            <input type='submit' value='go to <?= $folderName ?>'>
+        </form>
+
+        <form method='post' action='#'>
+            <input type='text' value='<?= $folderName ?>' name='last-name' hidden>
+            <input type='text' value='<?= $folderName ?>' name='new-name'>
+            <input type='submit' value='rename'>
         </form>
         <?php
     }
@@ -70,10 +87,3 @@ if (!empty($folders)) {
 
 </body>
 </html>
-
-
-
-
-
-
-
