@@ -1,13 +1,18 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 session_start();
+
 const ROOT = __DIR__ . '/files';
 require_once 'helper.php';
 
-if (!empty($_POST['goto-folder'])){
+if (!empty($_POST['goto-folder'])) {
     $_SESSION['go-to'] = ROOT . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
     opendir($_SESSION['go-to']);
-p($_SESSION['go-to']);
 }
+p($_SESSION['go-to']);
+
 $folders = [];
 if (!empty($_POST['create'])) {
     $dir = ROOT;
@@ -31,8 +36,8 @@ foreach ($files as $file) {
     }
 }
 if($_POST['last-name'] && $_POST['new-name']){
-    $lastName=$_POST['last-name'];
-    $newName =$_POST['new-name'];
+    $lastName = $_POST['last-name'];
+    $newName = $_POST['new-name'];
     rename($dir . DIRECTORY_SEPARATOR . $lastName, $dir . DIRECTORY_SEPARATOR . $newName);
 }
 ?>
@@ -83,6 +88,7 @@ if (!empty($folders)) {
         <?php
     }
 }
+
 //?>
 
 </body>
