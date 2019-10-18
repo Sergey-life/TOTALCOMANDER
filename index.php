@@ -7,18 +7,20 @@ session_start();
 const ROOT = __DIR__ . '/files';
 require_once 'helper.php';
 
+$dir = ROOT;
+if (!empty($_SESSION['go-to'])) {
+    $dir = $_SESSION['go-to'];
+}
+
 if (!empty($_POST['goto-folder'])) {
-    $_SESSION['go-to'] = ROOT . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
+    $_SESSION['go-to'] = $dir . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
     opendir($_SESSION['go-to']);
 }
 p($_SESSION['go-to']);
 
 $folders = [];
 if (!empty($_POST['create'])) {
-    $dir = ROOT;
     createFolder($dir, $_POST['create']);
-} else {
-    $dir = ROOT;
 }
 if (!empty($_POST['delete-folder'])) {
     var_dump($_POST);
