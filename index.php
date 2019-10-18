@@ -1,27 +1,26 @@
 <?php
-
+session_start();
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-session_start();
-
 const ROOT = __DIR__ . '/files';
 require_once 'helper.php';
-
 $dir = ROOT;
-if (!empty($_SESSION['go-to'])) {
-    $dir = $_SESSION['go-to'];
+
+if ($_SESSION['goto-folder']) {
+    $dir = $_SESSION['goto-folder'];
 }
 
-if (!empty($_POST['goto-folder'])) {
-    $_SESSION['go-to'] = $dir . DIRECTORY_SEPARATOR . $_POST['goto-folder'];
-    opendir($_SESSION['go-to']);
+if (!empty($_GET['goto-folder'])) {
+    $dir = $dir . DIRECTORY_SEPARATOR . $_GET['goto-folder'];
+    opendir($dir);
 }
 p($_SESSION['go-to']);
-
+//Создаю директорию
 $folders = [];
 if (!empty($_POST['create'])) {
     createFolder($dir, $_POST['create']);
 }
+//Удаляю директорию
 if (!empty($_POST['delete-folder'])) {
     var_dump($_POST);
     $folderName = $_POST['delete-folder'];
@@ -30,6 +29,7 @@ if (!empty($_POST['delete-folder'])) {
     } catch (Error $e) {
     }
 }
+//Убераю точки
 $files = scandir($dir);
 foreach ($files as $file) {
     if ($file != '.' && $file != '..' & $file != '.DS_Store') {
@@ -37,6 +37,7 @@ foreach ($files as $file) {
         array_push($folders, $file);
     }
 }
+//Переименовую директоию
 if($_POST['last-name'] && $_POST['new-name']){
     $lastName = $_POST['last-name'];
     $newName = $_POST['new-name'];
@@ -77,7 +78,7 @@ if (!empty($folders)) {
         </form>
         </p>
 
-        <form method='post' action='index.php'>
+        <form method='get' action='index.php'>
             <input class='hidden' type='text' name='goto-folder' value='<?= $folderName ?>' hidden>
             <input type='submit' value='go to <?= $folderName ?>'>
         </form>
@@ -90,8 +91,7 @@ if (!empty($folders)) {
         <?php
     }
 }
-
-//?>
+?>
 
 </body>
 </html>
