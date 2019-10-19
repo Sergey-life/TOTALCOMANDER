@@ -1,20 +1,18 @@
 <?php
-session_start();
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 const ROOT = __DIR__ . '/files';
 require_once 'helper.php';
 $dir = ROOT;
-
-if ($_SESSION['goto-folder']) {
-    $dir = $_SESSION['goto-folder'];
-}
-
+//Захожу в директорию
 if (!empty($_GET['goto-folder'])) {
     $dir = $dir . DIRECTORY_SEPARATOR . $_GET['goto-folder'];
     opendir($dir);
 }
-p($_SESSION['go-to']);
+if (!empty($_POST['home'])) {
+    $dir = ROOT;
+    opendir($dir);
+}
 //Создаю директорию
 $folders = [];
 if (!empty($_POST['create'])) {
@@ -38,7 +36,7 @@ foreach ($files as $file) {
     }
 }
 //Переименовую директоию
-if($_POST['last-name'] && $_POST['new-name']){
+if ($_POST['last-name'] && $_POST['new-name']) {
     $lastName = $_POST['last-name'];
     $newName = $_POST['new-name'];
     rename($dir . DIRECTORY_SEPARATOR . $lastName, $dir . DIRECTORY_SEPARATOR . $newName);
@@ -67,7 +65,6 @@ if($_POST['last-name'] && $_POST['new-name']){
 </form>
 
 <?php
-p($folders);
 if (!empty($folders)) {
     foreach ($folders as $folderName) {
         ?>
@@ -78,7 +75,7 @@ if (!empty($folders)) {
         </form>
         </p>
 
-        <form method='get' action='index.php'>
+        <form method='get' action=''>
             <input class='hidden' type='text' name='goto-folder' value='<?= $folderName ?>' hidden>
             <input type='submit' value='go to <?= $folderName ?>'>
         </form>
